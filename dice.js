@@ -2,10 +2,28 @@
 
 
 //Deck of cards
-var hearts = ["A", 2, 3, 4, 5, 6, 7, 8, 9, 10, "J", "Q", "K"];
-var spades = ["A", 2, 3, 4, 5, 6, 7, 8, 9, 10, "J", "Q", "K"];
-var diamonds = ["A", 2, 3, 4, 5, 6, 7, 8, 9, 10, "J", "Q", "K"];
-var clubs = ["A", 2, 3, 4, 5, 6, 7, 8, 9, 10, "J", "Q", "K"];
+var hearts = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"];
+var spades = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"];
+var diamonds = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"];
+var clubs = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"];
+
+var fullDeck = [hearts, spades, diamonds, clubs];
+
+
+
+
+function displayDeck(deck){
+	for (var j = 0; j < deck.length; j++) {
+		for (var i = 0; i < deck[j].length; i++) {
+		deck[j][i];
+		}
+		console.log(deck[j][i]);
+	}
+}	
+function displayCard(cardIndex, oldDeck){
+
+	console.log(cardIndex + " of " + suit);
+}
 
 
 function draw(){
@@ -42,6 +60,19 @@ function rollDie(sides){
 
 // alert(removeCardFromDeck(3, hearts));
 
-console.log(hearts);
+displayDeck(fullDeck);
 console.log(removeCardFromDeck(7, hearts));
 console.log();
+
+
+//to do now
+	// displayCard to console
+	// create a display for hands (players, dealers)
+	// work through gameplay
+	// 	purse operations
+	// 		win
+	// 		lose
+	// 		push
+	// 		blackjack
+//to do later
+	//add used cards pile for counting help
