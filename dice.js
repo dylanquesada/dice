@@ -2,10 +2,10 @@
 
 
 //Deck of cards
-var hearts = [A, 2, 3, 4, 5, 6, 7, 8, 9, 10, J, K, Q];
-var spades = [A, 2, 3, 4, 5, 6, 7, 8, 9, 10, J, K, Q];
-var diamonds = [A, 2, 3, 4, 5, 6, 7, 8, 9, 10, J, K, Q];
-var clubs = [A, 2, 3, 4, 5, 6, 7, 8, 9, 10, J, K, Q];
+var hearts = ["A", 2, 3, 4, 5, 6, 7, 8, 9, 10, "J", "Q", "K"];
+var spades = ["A", 2, 3, 4, 5, 6, 7, 8, 9, 10, "J", "Q", "K"];
+var diamonds = ["A", 2, 3, 4, 5, 6, 7, 8, 9, 10, "J", "Q", "K"];
+var clubs = ["A", 2, 3, 4, 5, 6, 7, 8, 9, 10, "J", "Q", "K"];
 
 
 function draw(){
@@ -15,9 +15,33 @@ function draw(){
 }
 
 
+
+function removeCardFromDeck(cardIndex, oldDeck){
+	var newDeck = [];
+	var newDeckCounter = 0;
+	// newDeck = oldDeck.splice(card, 1);
+	for (var i = 0; i < oldDeck.length; i++) {
+		if(i != cardIndex){
+			newDeck[newDeckCounter] = oldDeck[i];
+			newDeckCounter++;
+		}
+		// console.log(removeCardFromDeck(4, hearts));
+	}
+	return newDeck;
+}
+
+// function howManySides(numberOfCardsLeft){
+
+// }
+
 function rollDie(sides){
-	let output = Math.ceil(Math.random() * sides;
+	let output = Math.ceil(Math.random() * sides);
 	console.log(output);
 }
 
 
+// alert(removeCardFromDeck(3, hearts));
+
+console.log(hearts);
+console.log(removeCardFromDeck(7, hearts));
+console.log();
