@@ -91,7 +91,7 @@ function removeCardFromDeck(cardArray, oldDeck){
 	return newDeck;
 }
 
-displayCard(fullDeck, draw());
+// displayCard(fullDeck, draw());
 
 function rollDie(sides){
 	let output = Math.ceil(Math.random() * sides);
@@ -104,10 +104,39 @@ function displayCard(deck, cardIndex){
 	return card;
 }
 
-
-function runBlackjack(){
-
+function getCardValue(deck, cardIndex){
+	let value;
+	if(deck[cardIndex[1]][cardIndex[0]] === "J" ||
+		deck[cardIndex[1]][cardIndex[0]] === "Q" ||
+		deck[cardIndex[1]][cardIndex[0]] === "K"){
+		value = 10;
+	}
+	else if(deck[cardIndex[1]][cardIndex[0]] === "A"){
+		value = 1;
+	}
+	else{
+		value = parseInt(deck[cardIndex[1]][cardIndex[0]]);
+	}
+	return value;
 }
+console.log(getCardValue(fullDeck, draw()));
+console.log(getCardValue(fullDeck, draw()));
+console.log(getCardValue(fullDeck, draw()));
+console.log(getCardValue(fullDeck, draw()));
+// function runBlackjack(){
+// 	switch(){
+// 		case blackjack:
+
+// 			break;
+// 		case playerHit:
+
+// 			break;
+// 		case playerStay:
+
+// 			break;
+// 		case 
+
+// }
 //to do now
 	// displayCard to console
 	// create a display for hands (players, dealers)
