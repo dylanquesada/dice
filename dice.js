@@ -13,116 +13,185 @@ var suits = ["hearts", "spades", "clubs", "diamonds"];
 var fullDeck = [hearts, spades, clubs, diamonds];
 
 
-function deal(numberOfPlayers, deck){
-	let result = [];
-	let cardIndex;
-	let dealtCards = [];
-	for (var i = 0; i < (numberOfPlayers + numberOfDealers) * numberOfCardsDealtToEachPlayer; i++) {
-		cardIndex = draw();
-		deck = removeCardFromDeck(cardIndex, deck);
-		dealtCards[i] = cardIndex;
-	}
-	// for (var k = 0; k < 2; k++) {
-	// 		for (var l = 0; l < numberOfPlayers + numberOfDealers; l++) {
-	// 		cardIndex = draw();
-	// 		deck = removeCardFromDeck(cardIndex, deck);
-	// 		dealtCards[k][l] = cardIndex;
-	// 	}
-	// }
-	result[0] = dealtCards;
-	result[1] = deck;
-	console.log(dealtCards);
-	return result;
-}
-// deal(1, fullDeck);
-function displayDeck(deck){
-	for (var i = 0; i < deck.length; i++) {		
-	console.log(deck[i]);
-	}
-}
+function createNewDeck(){
+	var objectDeck = [];
+	let counter = 0;
+	for (var i = 0; i < fullDeck.length; i++) {
+		for (var j = 0; j < fullDeck[i].length; j++) {
+			let number;
+			if(	fullDeck[i][j] === "J" ||
+				fullDeck[i][j] === "Q" ||
+				fullDeck[i][j] === "K"){
+				number = 10;
+			}
+			else if(fullDeck[i][j] === "A"){
+				number = 1;
+			}
+			else{
+				number = parseInt(fullDeck[i][j]);
+			}
+			let card = {
+				value: number,
+				name: fullDeck[i][j],
+				suit: suits[i],
+				//fullName: "" + name + " of " + suits[i]
+			};
+			objectDeck[counter] = card;
+			counter++;
 
-function draw(){
-	let cardArray = [];
-	let cardIndex = rollDie(fullDeck[0].length + fullDeck[1].length + fullDeck[2].length + fullDeck[3].length);	
-	if(cardIndex < fullDeck[0].length){
-		cardArray = [cardIndex, 0];
-		return cardArray;
-	}
-	else{
-		cardIndex = cardIndex - fullDeck[0].length;
-	}
-	if(cardIndex < fullDeck[1].length){
-		cardArray = [cardIndex, 1];
-		return cardArray;
-	}
-	else{
-		cardIndex = cardIndex - fullDeck[1].length;
-	}
-	if(cardIndex < fullDeck[2].length){
-		cardArray = [cardIndex, 2];
-		return cardArray;
-	}
-	else{
-		cardIndex = cardIndex - fullDeck[2].length;
-		cardArray = [cardIndex, 3];
-		return cardArray;
-	}
-}
-
-function removeCardFromDeck(cardArray, oldDeck){
-	let suitIndex = cardArray[1];
-	let cardPositionInSuit = cardArray[0]; 
-	var newDeck = [];
-	var newDeckCounter = 0;
-	for (var i = 0; i < oldDeck.length; i++) {
-		if(i != suitIndex){
-			newDeck[i] = oldDeck[i];
-		}
-		else{
-			newDeck[i] = [];
 		}
 	}
-	for (var i = 0; i < oldDeck[suitIndex].length; i++) {
-		if(i != cardPositionInSuit){
-			newDeck[suitIndex][newDeckCounter] = oldDeck[suitIndex][i];
-			newDeckCounter++;
-		}
-	}
-	return newDeck;
+	return objectDeck;
 }
 
-// displayCard(fullDeck, draw());
+console.log(createNewDeck());
+// let card = {
+// 	value: 2,
+// 	name: "2",
+// 	suit: "hearts"
+// 	fullName: "2 of hearts"
+// }
 
-function rollDie(sides){
-	let output = Math.ceil(Math.random() * sides);
-	return output;
-}
 
-function displayCard(deck, cardIndex){
-	let card = deck[cardIndex[1]][cardIndex[0]] + " of " + suits[cardIndex[1]];
-	console.log(card);
-	return card;
-}
+// function deal(numberOfPlayers, deck){
+// 	let result = [];
+// 	result[2] = deck;
+// 	let cardIndex;
+// 	let dealtCards = [];
+// 	for (var i = 0; i < (numberOfPlayers + numberOfDealers) * numberOfCardsDealtToEachPlayer; i++) {
+// 		cardIndex = draw();
 
-function getCardValue(deck, cardIndex){
-	let value;
-	if(deck[cardIndex[1]][cardIndex[0]] === "J" ||
-		deck[cardIndex[1]][cardIndex[0]] === "Q" ||
-		deck[cardIndex[1]][cardIndex[0]] === "K"){
-		value = 10;
-	}
-	else if(deck[cardIndex[1]][cardIndex[0]] === "A"){
-		value = 1;
-	}
-	else{
-		value = parseInt(deck[cardIndex[1]][cardIndex[0]]);
-	}
-	return value;
-}
-console.log(getCardValue(fullDeck, draw()));
-console.log(getCardValue(fullDeck, draw()));
-console.log(getCardValue(fullDeck, draw()));
-console.log(getCardValue(fullDeck, draw()));
+// 		deck = removeCardFromDeck(cardIndex, deck);
+// 		dealtCards[i] = cardIndex;
+
+// 	}
+// 	// for (var k = 0; k < 2; k++) {
+// 	// 		for (var l = 0; l < numberOfPlayers + numberOfDealers; l++) {
+// 	// 		cardIndex = draw();
+// 	// 		deck = removeCardFromDeck(cardIndex, deck);
+// 	// 		dealtCards[k][l] = cardIndex;
+// 	// 	}
+// 	// }
+// 	result[0] = dealtCards;
+// 	result[1] = deck;
+// 	console.log(dealtCards);
+// 	return result;
+// }
+
+// function displayDeck(deck){
+// 	for (var i = 0; i < deck.length; i++) {		
+// 	console.log(deck[i]);
+// 	}
+// }
+
+// function draw(deck){
+// 	let cardArray = [];
+// 	let cardIndex = rollDie(deck[0].length + deck[1].length + deck[2].length + deck[3].length);	
+// 	if(cardIndex < deck[0].length){
+// 		cardArray = [cardIndex, 0];
+// 		return cardArray;
+// 	}
+// 	else{
+// 		cardIndex = cardIndex - deck[0].length;
+// 	}
+// 	if(cardIndex < deck[1].length){
+// 		cardArray = [cardIndex, 1];
+// 		return cardArray;
+// 	}
+// 	else{
+// 		cardIndex = cardIndex - deck[1].length;
+// 	}
+// 	if(cardIndex < deck[2].length){
+// 		cardArray = [cardIndex, 2];
+// 		return cardArray;
+// 	}
+// 	else{
+// 		cardIndex = cardIndex - deck[2].length;
+// 		cardArray = [cardIndex, 3];
+// 		return cardArray;
+// 	}
+// }
+
+// function assignCardValue(deck, cardIndex){
+
+// }
+
+// function removeCardFromDeck(cardArray, oldDeck){
+// 	let suitIndex = cardArray[1];
+// 	let cardPositionInSuit = cardArray[0]; 
+// 	var newDeck = [];
+// 	var newDeckCounter = 0;
+// 	for (var i = 0; i < oldDeck.length; i++) {
+// 		if(i != suitIndex){
+// 			newDeck[i] = oldDeck[i];
+// 		}
+// 		else{
+// 			newDeck[i] = [];
+// 		}
+// 	}
+// 	for (var i = 0; i < oldDeck[suitIndex].length; i++) {
+// 		if(i != cardPositionInSuit){
+// 			newDeck[suitIndex][newDeckCounter] = oldDeck[suitIndex][i];
+// 			newDeckCounter++;
+// 		}
+// 	}
+// 	return newDeck;
+// }
+
+// function rollDie(sides){
+// 	let output = Math.ceil(Math.random() * sides);
+// 	return output;
+// }
+
+// function getCardLabel(deck, cardIndex){
+// 	let cardLabel = deck[cardIndex[1]][cardIndex[0]] + " of " + suits[cardIndex[1]];
+// 	return cardLabel;
+// }
+
+// function displayCard(deck, cardIndex){
+// 	let card = deck[cardIndex[1]][cardIndex[0]] + " of " + suits[cardIndex[1]];
+// 	console.log(card);
+// 	return card;
+// }
+
+// function getCardValue(deck, cardIndex){
+// 	let value;
+// 	if(deck[cardIndex[1]][cardIndex[0]] === "J" ||
+// 		deck[cardIndex[1]][cardIndex[0]] === "Q" ||
+// 		deck[cardIndex[1]][cardIndex[0]] === "K"){
+// 		value = 10;
+// 	}
+// 	else if(deck[cardIndex[1]][cardIndex[0]] === "A"){
+// 		value = 1;
+// 	}
+// 	else{
+// 		value = parseInt(deck[cardIndex[1]][cardIndex[0]]);
+// 	}
+// 	return value;
+// }
+
+// function displayPlayerHand(currentStatus){
+// 	let cardsArray = currentStatus[0];
+// 	let deck = currentStatus[3];
+// 	let cardOne = cardsArray[0];
+// 	let cardTwo = cardsArray[1];
+// 	console.log("Player's hand: " + displayCard(deck, cardOne) + " " + displayCard(deck, cardTwo));
+// }
+
+// function menu(){
+// 	// if(prompt("Ready to play Blackjack? (yes/no)") === "yes"){}
+// 		let currentGame = deal(2, fullDeck);
+// 		displayPlayerHand(currentGame);
+
+
+	
+// }
+
+// menu();
+// console.log(getCardValue(fullDeck, draw()));
+// console.log(getCardValue(fullDeck, draw()));
+// console.log(getCardValue(fullDeck, draw()));
+// console.log(getCardValue(fullDeck, draw()));
 // function runBlackjack(){
 // 	switch(){
 // 		case blackjack:
