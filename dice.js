@@ -26,9 +26,32 @@ function runBlackjack(){
 			dealerHand[i] = drawOneCard(deck);
 			deck = removeCardFromDeck(deck, dealerHand[i]);
 		}
-		console.log("player hand: " + playerHand[1].name);
-		console.log("dealer hand : " + dealerHand);
-		console.log(deck);
+		printDealerCard(dealerHand);
+		printPlayerHand(playerHand);
+		//printPlayerOptions(playerHand);
+		// switch(){
+
+
+		// }
+	// console.log("Player's hand: " playerHand[0].name)
+
+	// 	console.log("player hand: " + playerHand[1].name);
+	// 	console.log("dealer hand : " + dealerHand);
+	// 	console.log(deck);
+
+}
+function printDealerCard(dealerHand){
+	console.log("Dealer's cards:");
+	console.log("Hole card : X of X");
+	for (var i = 1; i < dealerHand.length; i++) {
+		console.log(dealerHand[i].name + " of " + dealerHand[i].suit);
+	}
+}
+function printPlayerHand(playerHand){
+	console.log("Player's cards:")
+	for (var i = 0; i < playerHand.length; i++) {
+		console.log(playerHand[i].name + " of " + playerHand[i].suit);
+	}
 }
 
 function removeCardFromDeck(deck, card){
