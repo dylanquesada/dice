@@ -14,8 +14,40 @@ var fullDeck = [hearts, spades, clubs, diamonds];
 
 runBlackjack();
 
+// 	var testHand = [{
+// 		name: "A",
+// 		value: 11,
+// 		suit: "hearts"
+// 	},
+// 	{
+// 		name: "K",
+// 		value: 10,
+// 		suit: "hearts"
+// 	},
+// 	{
+// 		name: "A",
+// 		value: 11,
+// 		suit: "hearts"
+// 	}]
+// // function deal(deck){
+// // 	var hand = [];
+// // 	var numberOfCardsDealtToEachPlayer = 2;
+// // 	for (var i = 0; i < numberOfCardsDealtToEachPlayer; i++) {
+// // 		hand[i] = drawOneCard(deck);
+// // 	}
+// // 	return hand;
+// // }
+
+// // function removeCardsFromDeck(deck, card){
+// // 	for (var i = 0; i < cards.length; i++) {
+// // 		card[i]
+// // 	}
+// // }
+// console.log(checkHandForAce(testHand));
+
 function runBlackjack(){
 	let deck = createNewDeck();
+	let status = [];
 	var playerHand = [];
 	var dealerHand = [];
 		for (var i = 0; i < numberOfCardsDealtToEachPlayer; i++) {
@@ -26,24 +58,30 @@ function runBlackjack(){
 			dealerHand[i] = drawOneCard(deck);
 			deck = removeCardFromDeck(deck, dealerHand[i]);
 		}
-		let status = playerTurn(playerHand, dealerHand, deck);
+		status = playerTurn(playerHand, dealerHand, deck);
 		deck = status[0];
 		playerHand = status[1];
 		dealerTurn(playerHand, dealerHand, deck);
-
 }
 
 function dealerTurn(playerHand, dealerHand, deck){
 	printFinalDealerPlay(dealerHand);
 	printPlayerHand(playerHand);
 	let value = 0;
+	let cardIndex;
 	while(value < 17){
 		value = 0;
 		for (var i = 0; i < dealerHand.length; i++) {
 			value += dealerHand[i].value;
+			if(dealerHand[i].name === "A"){
+				value -= 10;
+			}
 		}
 		if(value < 17){
-			dealerHand.push(drawOneCard(deck));
+			cardIndex = drawOneCard(deck);
+			dealerHand.push(cardIndex);
+			removeCardFromDeck(deck, cardIndex);
+			printFinalDealerPlay(dealerHand);
 			if(value > 21){
 				value = checkHandForAce(dealerHand);
 			}
@@ -52,10 +90,10 @@ function dealerTurn(playerHand, dealerHand, deck){
 			}
 		}
 		else if(value >= 17){
-			return alert(compareFinalHands(playerHand, dealerHand));
+			return compareFinalHands(playerHand, dealerHand);
 		}
 	}
-	return alert(compareFinalHands(playerHand, dealerHand));
+	return compareFinalHands(playerHand, dealerHand);
 }
 
 function compareFinalHands(playerHand, dealerHand){
@@ -86,18 +124,24 @@ function compareFinalHands(playerHand, dealerHand){
 
 function playerTurn(playerHand, dealerHand, deck){
 	var stay = false;
+	var bust = false;
 	var status = [];
-	while(calculateHand(playerHand) < 21 && !stay){
+	while(checkHandForAce(playerHand) < 21 && !stay && !bust){
 		printDealerCard(dealerHand);
 		printPlayerHand(playerHand);
 		let choice = prompt("Enter 'hit' or 'stay'");
 		switch (choice){	
 			case "hit":
-				playerHand.push(drawOneCard(deck));
+				let cardIndex = drawOneCard(deck);
+				playerHand.push(cardIndex);
+				deck = removeCardFromDeck(deck, cardIndex);
 				status[0] = deck;
-				if(calculateHand(playerHand) > 21){
+				status[1] = playerHand;
+				if(checkHandForAce(playerHand) > 21){
 					printFinalDealerPlay(dealerHand);
+					bust = true;
 					alert("Player Busts");
+					return status;
 				}
 				checkHandForAce(playerHand);
 				break;
@@ -115,23 +159,23 @@ function playerTurn(playerHand, dealerHand, deck){
 function calculateHand(hand){
 	let value = 0;
 	for (var i = 0; i < hand.length; i++) {
-		value =+ hand[i].value;
+		value += hand[i].value;
 	}
 	return value;
 }
 
 function checkHandForAce(hand){
-	let ace = false;
+	let ace = 0;
 	let value = 0;
 	for (var i = 0; i < hand.length; i++) {
-		value += hand.value;
-		if(hand[i].name === "A"){
-			ace = true;
-		}
 		value += hand[i].value;
-		if(value > 21 && ace){
-			value -= 10;
+		if(hand[i].name === "A"){
+			ace++;
 		}
+	}
+	while(value > 21 && ace > 0) {
+		ace--;
+		value = value - 10;
 	}
 	return value;
 }
@@ -151,15 +195,18 @@ function printPlayerHand(playerHand){
 		console.log(playerHand[i].name + " of " + playerHand[i].suit);
 		value += playerHand[i].value;
 	}
-	console.log(value);
+	console.log(checkHandForAce(playerHand));
 }
 
 function printFinalDealerPlay(dealerHand){
+	let value = dealerHand[0].value;
 	console.log("Dealer's cards:");
 	console.log("Hole card : " + dealerHand[0].name + " of " + dealerHand[0].suit);
 	for (var i = 1; i < dealerHand.length; i++) {
 		console.log(dealerHand[i].name + " of " + dealerHand[i].suit);
+		value += dealerHand[i].value;
 	}
+	console.log(checkHandForAce(dealerHand));
 }
 
 function removeCardFromDeck(deck, card){
@@ -183,7 +230,7 @@ function createNewDeck(){
 				number = 10;
 			}
 			else if(fullDeck[i][j] === "A"){
-				number = 1;
+				number = 11;
 			}
 			else{
 				number = parseInt(fullDeck[i][j]);
@@ -244,135 +291,3 @@ function drawOneCard(deck){
 }
 
 
-
-
-// // function draw(deck){
-// // 	let cardArray = [];
-// // 	let cardIndex = rollDie(deck[0].length + deck[1].length + deck[2].length + deck[3].length);	
-// // 	if(cardIndex < deck[0].length){
-// // 		cardArray = [cardIndex, 0];
-// // 		return cardArray;
-// // 	}
-// // 	else{
-// // 		cardIndex = cardIndex - deck[0].length;
-// // 	}
-// // 	if(cardIndex < deck[1].length){
-// // 		cardArray = [cardIndex, 1];
-// // 		return cardArray;
-// // 	}
-// // 	else{
-// // 		cardIndex = cardIndex - deck[1].length;
-// // 	}
-// // 	if(cardIndex < deck[2].length){
-// // 		cardArray = [cardIndex, 2];
-// // 		return cardArray;
-// // 	}
-// // 	else{
-// // 		cardIndex = cardIndex - deck[2].length;
-// // 		cardArray = [cardIndex, 3];
-// // 		return cardArray;
-// // 	}
-// // }
-
-// function assignCardValue(deck, cardIndex){
-
-// }
-
-// function removeCardFromDeck(cardArray, oldDeck){
-// 	let suitIndex = cardArray[1];
-// 	let cardPositionInSuit = cardArray[0]; 
-// 	var newDeck = [];
-// 	var newDeckCounter = 0;
-// 	for (var i = 0; i < oldDeck.length; i++) {
-// 		if(i != suitIndex){
-// 			newDeck[i] = oldDeck[i];
-// 		}
-// 		else{
-// 			newDeck[i] = [];
-// 		}
-// 	}
-// 	for (var i = 0; i < oldDeck[suitIndex].length; i++) {
-// 		if(i != cardPositionInSuit){
-// 			newDeck[suitIndex][newDeckCounter] = oldDeck[suitIndex][i];
-// 			newDeckCounter++;
-// 		}
-// 	}
-// 	return newDeck;
-// }
-
-
-
-// function getCardLabel(deck, cardIndex){
-// 	let cardLabel = deck[cardIndex[1]][cardIndex[0]] + " of " + suits[cardIndex[1]];
-// 	return cardLabel;
-// }
-
-// function displayCard(deck, cardIndex){
-// 	let card = deck[cardIndex[1]][cardIndex[0]] + " of " + suits[cardIndex[1]];
-// 	console.log(card);
-// 	return card;
-// }
-
-// function getCardValue(deck, cardIndex){
-// 	let value;
-// 	if(deck[cardIndex[1]][cardIndex[0]] === "J" ||
-// 		deck[cardIndex[1]][cardIndex[0]] === "Q" ||
-// 		deck[cardIndex[1]][cardIndex[0]] === "K"){
-// 		value = 10;
-// 	}
-// 	else if(deck[cardIndex[1]][cardIndex[0]] === "A"){
-// 		value = 1;
-// 	}
-// 	else{
-// 		value = parseInt(deck[cardIndex[1]][cardIndex[0]]);
-// 	}
-// 	return value;
-// }
-
-// function displayPlayerHand(currentStatus){
-// 	let cardsArray = currentStatus[0];
-// 	let deck = currentStatus[3];
-// 	let cardOne = cardsArray[0];
-// 	let cardTwo = cardsArray[1];
-// 	console.log("Player's hand: " + displayCard(deck, cardOne) + " " + displayCard(deck, cardTwo));
-// }
-
-// function menu(){
-// 	// if(prompt("Ready to play Blackjack? (yes/no)") === "yes"){}
-// 		let currentGame = deal(2, fullDeck);
-// 		displayPlayerHand(currentGame);
-
-
-	
-// }
-
-// menu();
-// // console.log(getCardValue(fullDeck, draw()));
-// // console.log(getCardValue(fullDeck, draw()));
-// // console.log(getCardValue(fullDeck, draw()));
-// // console.log(getCardValue(fullDeck, draw()));
-// // function runBlackjack(){
-// // 	switch(){
-// // 		case blackjack:
-
-// // 			break;
-// // 		case playerHit:
-
-// // 			break;
-// // 		case playerStay:
-
-// // 			break;
-// // 		case 
-
-// // }
-// //to do now
-// 	// displayCard to console
-// 	// create a display for hands (players, dealers)
-// 	// work through gameplay
-// 	// 	purse operations
-// 	// 		win
-	// 		lose
-	// 		push
-	// 		blackjack
-//to do later
-	//add used cards pile for counting help
