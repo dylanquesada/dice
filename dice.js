@@ -17,7 +17,7 @@ runBlackjack();
 function runBlackjack(){
 	let deck = createNewDeck();
 	var playerHand = [];
-	var  dealerHand = [];
+	var dealerHand = [];
 		for (var i = 0; i < numberOfCardsDealtToEachPlayer; i++) {
 			playerHand[i] = drawOneCard(deck);
 			deck = removeCardFromDeck(deck, playerHand[i]);
@@ -26,20 +26,116 @@ function runBlackjack(){
 			dealerHand[i] = drawOneCard(deck);
 			deck = removeCardFromDeck(deck, dealerHand[i]);
 		}
-		printDealerCard(dealerHand);
-		printPlayerHand(playerHand);
-		//printPlayerOptions(playerHand);
-		// switch(){
-
-
-		// }
-	// console.log("Player's hand: " playerHand[0].name)
-
-	// 	console.log("player hand: " + playerHand[1].name);
-	// 	console.log("dealer hand : " + dealerHand);
-	// 	console.log(deck);
+		let status = playerTurn(playerHand, dealerHand, deck);
+		deck = status[0];
+		playerHand = status[1];
+		dealerTurn(playerHand, dealerHand, deck);
 
 }
+
+function dealerTurn(playerHand, dealerHand, deck){
+	printFinalDealerPlay(dealerHand);
+	printPlayerHand(playerHand);
+	let value = 0;
+	while(value < 17){
+		value = 0;
+		for (var i = 0; i < dealerHand.length; i++) {
+			value += dealerHand[i].value;
+		}
+		if(value < 17){
+			dealerHand.push(drawOneCard(deck));
+			if(value > 21){
+				value = checkHandForAce(dealerHand);
+			}
+			if(value > 21){
+				return alert("Dealer busts! Player Wins!");
+			}
+		}
+		else if(value >= 17){
+			return alert(compareFinalHands(playerHand, dealerHand));
+		}
+	}
+	return alert(compareFinalHands(playerHand, dealerHand));
+}
+
+function compareFinalHands(playerHand, dealerHand){
+	let playerTotal = 0;
+	let dealerTotal = 0;
+	for (var i = 0; i < playerHand.length; i++) {
+		playerTotal += playerHand[i].value;
+		if(playerTotal > 21){
+			playerTotal = checkHandForAce(playerTotal);
+		}
+	}
+	for (var i = 0; i < dealerHand.length; i++) {
+		dealerTotal += dealerHand[i].value;
+		if (dealerTotal > 21) {
+			dealerTotal = checkHandForAce(dealerTotal);
+		}
+	}
+	if(playerTotal > dealerTotal){
+		alert("Player Wins!");
+	}
+	else if(playerTotal === dealerTotal){
+		alert("Push!");
+	}
+	else{
+		alert("Dealer Wins...");
+	}
+}
+
+function playerTurn(playerHand, dealerHand, deck){
+	var stay = false;
+	var status = [];
+	while(calculateHand(playerHand) < 21 && !stay){
+		printDealerCard(dealerHand);
+		printPlayerHand(playerHand);
+		let choice = prompt("Enter 'hit' or 'stay'");
+		switch (choice){	
+			case "hit":
+				playerHand.push(drawOneCard(deck));
+				status[0] = deck;
+				if(calculateHand(playerHand) > 21){
+					printFinalDealerPlay(dealerHand);
+					alert("Player Busts");
+				}
+				checkHandForAce(playerHand);
+				break;
+			case "stay":
+				checkHandForAce(playerHand);
+				stay = true;
+				status[0] = deck;
+				status[1] = playerHand;
+				return status;
+				break;
+		}
+	}
+}
+
+function calculateHand(hand){
+	let value = 0;
+	for (var i = 0; i < hand.length; i++) {
+		value =+ hand[i].value;
+	}
+	return value;
+}
+
+function checkHandForAce(hand){
+	let ace = false;
+	let value = 0;
+	for (var i = 0; i < hand.length; i++) {
+		value += hand.value;
+		if(hand[i].name === "A"){
+			ace = true;
+		}
+		value += hand[i].value;
+		if(value > 21 && ace){
+			value -= 10;
+		}
+	}
+	return value;
+}
+
 function printDealerCard(dealerHand){
 	console.log("Dealer's cards:");
 	console.log("Hole card : X of X");
@@ -47,10 +143,22 @@ function printDealerCard(dealerHand){
 		console.log(dealerHand[i].name + " of " + dealerHand[i].suit);
 	}
 }
+
 function printPlayerHand(playerHand){
+	let value = 0;
 	console.log("Player's cards:")
 	for (var i = 0; i < playerHand.length; i++) {
 		console.log(playerHand[i].name + " of " + playerHand[i].suit);
+		value += playerHand[i].value;
+	}
+	console.log(value);
+}
+
+function printFinalDealerPlay(dealerHand){
+	console.log("Dealer's cards:");
+	console.log("Hole card : " + dealerHand[0].name + " of " + dealerHand[0].suit);
+	for (var i = 1; i < dealerHand.length; i++) {
+		console.log(dealerHand[i].name + " of " + dealerHand[i].suit);
 	}
 }
 
@@ -61,7 +169,6 @@ function removeCardFromDeck(deck, card){
 			return deck;
 		}
 	}
-	
 }
 
 function createNewDeck(){
