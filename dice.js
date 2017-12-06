@@ -12,56 +12,60 @@ var diamonds = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"
 var suits = ["hearts", "spades", "clubs", "diamonds"];
 var fullDeck = [hearts, spades, clubs, diamonds];
 
-runBlackjack();
+function startGame(){
+	var deck = createNewDeck();
+	var newGame;
+	while(newGame != "no"){
+		deck = createNewDeck();
+		while(deck.length > 20){
+		deck = runBlackjack(deck);
+		}
+		newGame = prompt("Shuffle Time! Would you like to shuffle and replay? (yes or no)");
+	}
+}
 
-// 	var testHand = [{
-// 		name: "A",
-// 		value: 11,
-// 		suit: "hearts"
-// 	},
-// 	{
-// 		name: "K",
-// 		value: 10,
-// 		suit: "hearts"
-// 	},
-// 	{
-// 		name: "A",
-// 		value: 11,
-// 		suit: "hearts"
-// 	}]
-// // function deal(deck){
-// // 	var hand = [];
-// // 	var numberOfCardsDealtToEachPlayer = 2;
-// // 	for (var i = 0; i < numberOfCardsDealtToEachPlayer; i++) {
-// // 		hand[i] = drawOneCard(deck);
-// // 	}
-// // 	return hand;
-// // }
+startGame();
 
-// // function removeCardsFromDeck(deck, card){
-// // 	for (var i = 0; i < cards.length; i++) {
-// // 		card[i]
-// // 	}
-// // }
-// console.log(checkHandForAce(testHand));
+// function addImageToCard(deck){
+// 	for (var i = 0; i < deck.length; i++) {
+// 		deck[i].image = "cardImages/" + deck[i].value + "_of_" + deck[i].suit + ".png";
+// 	}
+// }
 
-function runBlackjack(){
-	let deck = createNewDeck();
+function runBlackjack(deck){
+	deck = deck;
 	let status = [];
 	var playerHand = [];
 	var dealerHand = [];
+	status[0] = deck;
 		for (var i = 0; i < numberOfCardsDealtToEachPlayer; i++) {
 			playerHand[i] = drawOneCard(deck);
 			deck = removeCardFromDeck(deck, playerHand[i]);
+			status[0] = deck;
 		}
 		for (var i = 0; i < numberOfCardsDealtToEachPlayer; i++) {
 			dealerHand[i] = drawOneCard(deck);
 			deck = removeCardFromDeck(deck, dealerHand[i]);
+			status[0] = deck;
+		}
+		if(dealerHand[0].value + dealerHand[1].value === 21){
+			alert("Dealer Blackjack...");
+			if(playerHand[0].value + playerHand[1].value === 21){
+				alert("Push");
+				return deck;
+			}
+			return deck;
 		}
 		status = playerTurn(playerHand, dealerHand, deck);
 		deck = status[0];
 		playerHand = status[1];
+		if(checkHandForAce(playerHand) > 21){
+			alert("Dealer Wins...");
+			return deck;
+		}
 		dealerTurn(playerHand, dealerHand, deck);
+		return deck;
+
 }
 
 function dealerTurn(playerHand, dealerHand, deck){
@@ -126,6 +130,8 @@ function playerTurn(playerHand, dealerHand, deck){
 	var stay = false;
 	var bust = false;
 	var status = [];
+	status[0] = deck;
+	status[1] = playerHand;
 	while(checkHandForAce(playerHand) < 21 && !stay && !bust){
 		printDealerCard(dealerHand);
 		printPlayerHand(playerHand);
@@ -140,6 +146,7 @@ function playerTurn(playerHand, dealerHand, deck){
 				if(checkHandForAce(playerHand) > 21){
 					printFinalDealerPlay(dealerHand);
 					bust = true;
+					printPlayerHand(playerHand);
 					alert("Player Busts");
 					return status;
 				}
@@ -152,6 +159,10 @@ function playerTurn(playerHand, dealerHand, deck){
 				status[1] = playerHand;
 				return status;
 				break;
+			default:
+				status[0] = deck;
+				status[1] = playerHand;
+				alert("Wrong input.");
 		}
 	}
 }
@@ -195,7 +206,7 @@ function printPlayerHand(playerHand){
 		console.log(playerHand[i].name + " of " + playerHand[i].suit);
 		value += playerHand[i].value;
 	}
-	console.log(checkHandForAce(playerHand));
+	console.log("Player Total: " + checkHandForAce(playerHand));
 }
 
 function printFinalDealerPlay(dealerHand){
@@ -206,7 +217,7 @@ function printFinalDealerPlay(dealerHand){
 		console.log(dealerHand[i].name + " of " + dealerHand[i].suit);
 		value += dealerHand[i].value;
 	}
-	console.log(checkHandForAce(dealerHand));
+	console.log("Dealer Total: " + checkHandForAce(dealerHand));
 }
 
 function removeCardFromDeck(deck, card){
@@ -239,6 +250,7 @@ function createNewDeck(){
 				value: number,
 				name: fullDeck[i][j],
 				suit: suits[i],
+				image: "",
 				//fullName: "" + name + " of " + suits[i]
 			};
 			objectDeck[counter] = card;
